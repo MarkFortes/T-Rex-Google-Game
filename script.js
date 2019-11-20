@@ -36,7 +36,7 @@ function borraCanvas(){
 }
 
 function dibujaRex(){
-  ctx.drawImage(imgRex,100,100,50,50);
+  ctx.drawImage(imgRex,100,150,50,50);
 }
 
 
