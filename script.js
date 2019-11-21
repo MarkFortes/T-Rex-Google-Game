@@ -16,6 +16,7 @@ function principal(){
   dibujaNube1();
   dibujaNube2();
   dibujaRex();
+  gestionPartida();
 }
 
 //Función llamada en el momento que inicializa las variables y funciones necesarias
@@ -34,11 +35,32 @@ function borraCanvas(){
 //Funcion que oye las teclas pulsadas-------------------------------------------
 document.addEventListener('keydown', function(evento){
   if (evento.keyCode == 32 || evento.keyCode == 38) {
-    if (nivel.muerto == false) {
+    if (trex.muerto == false && trex.saltando == false) {
       saltar();
+    }else if (trex.muerto == true) {
+      trex.muerto = false;
+      nivel.velocidad = 7;
+      nube1.velocidad = 1;
+      nube2.velocidad = 1;
+      nube1.x = ancho + 50;
+      nube2.x = ancho + 500;
+      cactus.x = ancho + 100;
+      nivel.puntuacion = 0;
     }
   }
 });
+
+//Function que gestiona los niveles de juego------------------------------------
+function gestionPartida(){
+  ctx.font = "30px impact";
+  ctx.fillStyle = "#555555";
+  ctx.fillText(nivel.puntuacion,600,50);
+
+  if (trex.muerto == true) {
+    ctx.font = "60px impact";
+    ctx.fillText("GAME OVER",240,150);
+  }
+}
 
 //Variables --------------------------------------------------------------------
 var ancho = 700;
@@ -46,11 +68,11 @@ var alto = 300;
 var canvas,ctx;
 var imgRex, imgNube, imgCactus, imgSuelo;
 var suelo = 200;
-var trex = {x:100, y:suelo, vy:0, gravedad:2, salto:24, vymax:9, saltando:false};
+var trex = {x:100, y:suelo, vy:0, gravedad:2, salto:24, vymax:9, saltando:false, muerto:false};
 var cactus = {x:ancho + 100, y:suelo};
 var nube1 = {x:ancho + 50, y:20, velocidad: 1};
 var nube2 = {x:ancho + 500, y:70, velocidad: 1};
-var nivel = {velocidad:7, puntuacion:0, muerto:false};
+var nivel = {velocidad:7, puntuacion:0};
 var sueloGraph = {x:0, y:suelo + 40};
 
 //Función llamada en init para cargar las imagenes -----------------------------
@@ -91,6 +113,9 @@ function dibujaSuelo(){
 function logicaCactus(){
   if (cactus.x < -80) { //Si ya se ha salido de la vista por la izquirda del canvas
     cactus.x = ancho + 100;
+    //Acciones que hay cuando el cactus sale por la izquierda == ha pasado de nivel
+    nivel.puntuacion++;
+    nivel.velocidad += 1,5;
   }else {
     cactus.x -= nivel.velocidad;
   }
@@ -120,11 +145,10 @@ function gravedad(){
 function colision(){
   if (cactus.x >= 100 && cactus.x <= 150 ) {
     if (trex.y >= 200 && trex.y <= 250) {
-      nivel.muerto = true;
+      trex.muerto = true;
       nivel.velocidad = 0;
       nube1.velocidad = 0;
       nube2.velocidad = 0;
-      alert("PERDISTEEE");
     }
   }
 }

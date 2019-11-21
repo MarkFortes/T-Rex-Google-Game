@@ -5,3 +5,8 @@ canvas{
     margin-right: auto;
     display: block;
 }
+
+p{
+  text-align: center;
+  font-family: verdana;
+}
